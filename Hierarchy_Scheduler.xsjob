@@ -1,0 +1,22 @@
+{
+
+  "description": "Job to Update Hierarhcy values",
+
+   "action": "IOP:Trigger_Hierarchy.xsjs::Trigger_Hierarchy",
+
+  "schedules":
+
+  [
+
+  {
+
+  "description": "This scheduler runs every day to update Hierarchy data to HANA DB from ECC",
+  
+  "xscron": "* * * * * */10 00"
+ 
+
+  }
+
+  ]
+
+}

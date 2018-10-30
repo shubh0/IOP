@@ -1,0 +1,26 @@
+{
+
+  "description": "Job to Update JSAHEADER values",
+
+ 
+  "action": "IOP:UpdateInActive.xsjs::markInActive",
+
+  "schedules":
+
+  [
+
+  {
+
+  "description": "This scheduler runs every day to update to send Push Notification",
+  
+ 
+ 
+  "xscron": "* * * * * */20 00"
+
+ 
+
+  }
+
+  ]
+
+}

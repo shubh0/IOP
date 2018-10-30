@@ -1,0 +1,8 @@
+host = "aptrestwebprttj4jqbl.eu3.hana.ondemand.com";
+port = 80;
+pathPrefix = "/APT_Rest_Web/rest";
+proxyType = http;
+proxyHost = "proxy";
+proxyPort = 8080;
+authType = basic;
+useSSL = false;

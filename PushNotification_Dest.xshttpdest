@@ -1,0 +1,8 @@
+host = "mobile-d7e367960.us2.hana.ondemand.com";
+port = 443;
+pathPrefix = "/restnotification/application/com.incture.taskmanagement/user";
+proxyType = http;
+proxyHost = "proxy";
+proxyPort = 8080;
+authType = basic;
+useSSL = true;

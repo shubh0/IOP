@@ -1,0 +1,8 @@
+host = "l5470-iflmap.hcisbp.us2.hana.ondemand.com";
+port = 443;
+pathPrefix = "/http";
+proxyType = http;
+proxyHost = "proxy";
+proxyPort = 8080;
+authType = basic;
+useSSL = true;

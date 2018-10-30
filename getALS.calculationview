@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="getALS" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="true" executionSemantic="UNDEFINED" outputViewType="Projection">
+  <descriptions defaultDescription="getALS"/>
+  <metadata activatedAt="2018-07-21 14:09:43.0" changedAt="2018-07-22 11:54:28.101" createdAt="2018-07-22 11:54:28.1"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="54"/>
+  <dataSources>
+    <DataSource id="TM_CANARY_STAGING_NDV" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="IOP" columnObjectName="TM_CANARY_STAGING_NDV"/>
+    </DataSource>
+    <DataSource id="ALS_INVESTIGATION" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="IOP" columnObjectName="ALS_INVESTIGATION"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Canary">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="CREATED_AT"/>
+        <viewAttribute id="DATA_VALUE"/>
+        <viewAttribute id="MUWI_ID"/>
+        <viewAttribute id="PARAM_TYPE"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="SOURCE" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>'CANARY'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="VARCHAR" id="PARAMETER" length="25" expressionLanguage="COLUMN_ENGINE">
+          <formula>case(&quot;PARAM_TYPE&quot;, 'QTOILD','Oil Daily','QTH2OD','Water Daily', leftstr(&quot;PARAM_TYPE&quot;, 25))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#TM_CANARY_STAGING_NDV">
+        <mapping xsi:type="Calculation:AttributeMapping" target="CREATED_AT" source="CREATED_AT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATA_VALUE" source="DATA_VALUE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MUWI_ID" source="MUWI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARAM_TYPE" source="PARAM_TYPE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="ALS">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="MUWI"/>
+        <viewAttribute id="DATE"/>
+        <viewAttribute id="REASON"/>
+        <viewAttribute id="SOURCE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ALS_INVESTIGATION">
+        <mapping xsi:type="Calculation:AttributeMapping" target="MUWI" source="MUWI"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATE" source="DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="REASON" source="REASON"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOURCE" source="SOURCE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:UnionView" id="Union_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="MUWI" transparentFilter="false"/>
+        <viewAttribute id="PARAMETER" transparentFilter="false"/>
+        <viewAttribute id="SOURCE" transparentFilter="false"/>
+        <viewAttribute id="DATA_VALUE" transparentFilter="false"/>
+        <viewAttribute id="CREATED_AT" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input emptyUnionBehavior="NO_ROW" node="#Canary">
+        <mapping xsi:type="Calculation:AttributeMapping" target="MUWI" source="MUWI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARAMETER" source="PARAMETER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOURCE" source="SOURCE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATA_VALUE" source="DATA_VALUE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CREATED_AT" source="CREATED_AT"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#ALS">
+        <mapping xsi:type="Calculation:AttributeMapping" target="MUWI" source="MUWI"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARAMETER" source="REASON"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOURCE" source="SOURCE"/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="DATA_VALUE" null="true" value=""/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CREATED_AT" source="DATE"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Union_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="MUWI" order="2" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="MUWI"/>
+        <keyMapping columnObjectName="Union_1" columnName="MUWI"/>
+      </attribute>
+      <attribute id="CREATED_AT" order="3" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="TIME"/>
+        <keyMapping columnObjectName="Union_1" columnName="CREATED_AT"/>
+      </attribute>
+      <attribute id="PARAMETER" order="4" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="PARAMETER"/>
+        <keyMapping columnObjectName="Union_1" columnName="PARAMETER"/>
+      </attribute>
+      <attribute id="SOURCE" order="6" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="SOURCE"/>
+        <keyMapping columnObjectName="Union_1" columnName="SOURCE"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes>
+      <calculatedAttribute id="MUWI_X" hidden="false" order="1" semanticType="empty" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="MUWI_X"/>
+        <keyCalculation datatype="VARCHAR" expressionLanguage="COLUMN_ENGINE" length="40">
+          <formula>&quot;MUWI&quot;+'-'+if(daysbetween(&quot;CREATED_AT&quot;,now()) &lt; 7, 'Y', 'N')</formula>
+        </keyCalculation>
+      </calculatedAttribute>
+    </calculatedAttributes>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="DATA_VALUE" order="5" aggregationType="max" measureType="simple">
+        <descriptions defaultDescription="DATA_VALUE"/>
+        <measureMapping columnObjectName="Union_1" columnName="DATA_VALUE"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="100" y="82"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Canary" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="20" y="305"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="ALS" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="200" y="305"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Union_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="100" y="180"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>
